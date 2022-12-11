@@ -7,7 +7,7 @@
     font-weight: bold;
 
 }
-#newPkg {
+#newPkg, #savePkg {
     color: black;
     margin-left: 20%;
     margin-right: 20%;

@@ -1,11 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    var data = {
-        "packages": [
-
-        ]
-    }
-
+    
     var newPkgBtn = document.getElementById('newPkg');
     var savePkgBtn = document.getElementById('savePkg')
 
@@ -34,13 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let courier = document.getElementById('couriers').value
 
             e.innerHTML = `<img src='img/${courier}.svg' id='courierIcon'>` + '<br>' + `${tracking}`
-            
-            data.packages.push({
-                "pkgId": Math.floor(Math.random() * 100 + 1),
-                "logo": `${courier}.svg`,
-                "trackingNum": `${tracking}`
-            })
-
+       
             document.body.appendChild(e)
 
             document.getElementById('tracking').value = '';
@@ -54,33 +43,33 @@ document.addEventListener('DOMContentLoaded', function() {
     savePkgBtn.addEventListener('click', function() {
         //putting all objects into an array that we can save to local chrome storage via api
         //making a child object to find via the query selector
-        chrome.storage.local.set({'test':data}, function() {
-            //console.log(`storeArray now contains ${packageArray.length} objects`)
-            //then you just access the JSON objects as you normally would in an array
-           console.log()
-       })
+        let domArr = []    
+        const child = document.body.querySelectorAll('button#pkgTrack')
+            //push all found new package queries to the array called packageArray
 
-   });
+            const dom = Array.from(child)
 
-       
-    //this is where the data is loaded from local storage and offloaded into the DOM. 
-       chrome.storage.local.get('test', function(data) {
-        console.log(data.test.packages.length)
+            console.log(dom.length)
+            console.log(dom[1].innerHTML)
 
-        for (i =0; i <data.test.packages.length; i++) {
+            for(let i=0; i < dom.length; i++) {
+                domArr.push(dom[i].innerHTML)
+            }
 
-            const e = document.createElement('button')
-            e.setAttribute('id', 'pkgTrack')
-            let tracking = data.test.packages[i].trackingNum
-            let courier = data.test.packages[i].logo
-            e.innerHTML = `<img src='img/${courier}' id='courierIcon'>` + '<br>' + `${tracking}`
-            document.body.appendChild(e)
-    
-        }
+            console.log(domArr)
 
- 
+        chrome.storage.local.set({'test':domArr}, function() {
+             //console.log(`storeArray now contains ${packageArray.length} objects`)
+             //then you just access the JSON objects as you normally would in an array
+            console.log()
+        })
+
     });
 
+        
     ///write code for deleting the instance right here. 
-   
+    chrome.storage.local.get('test', function(data) {
+        console.log(data.test)
+
+    });
 });
