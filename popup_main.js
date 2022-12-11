@@ -41,12 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 "trackingNum": `${tracking}`
             })
 
-            chrome.storage.sync.set({'test':data}, function() {
-                //console.log(`storeArray now contains ${packageArray.length} objects`)
-                //then you just access the JSON objects as you normally would in an array
-               console.log(data)
-           })
-
             document.body.appendChild(e)
 
             document.getElementById('tracking').value = '';
@@ -56,29 +50,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
     });
+
+    savePkgBtn.addEventListener('click', function() {
+        //putting all objects into an array that we can save to local chrome storage via api
+        //making a child object to find via the query selector
+        chrome.storage.sync.set({'test':data}, function() {
+            //console.log(`storeArray now contains ${packageArray.length} objects`)
+            //then you just access the JSON objects as you normally would in an array
+           console.log()
+       })
+
+   });
+
        
     //this is where the data is loaded from local storage and offloaded into the DOM. 
-    chrome.storage.sync.get('test', function(result) {
-        console.log(result.test.packages)
+       chrome.storage.sync.get(['test'], function(data) {
+        console.log(data.test.packages.length)
 
-        for (i =0; i < result.test.packages.length; i++) {
-        
+        for (i =0; i <data.test.packages.length; i++) {
+
             const e = document.createElement('button')
             e.setAttribute('id', 'pkgTrack')
-            let tracking = result.test.packages[i].trackingNum
-            let courier = result.test.packages[i].logo
+            let tracking = data.test.packages[i].trackingNum
+            let courier = data.test.packages[i].logo
             e.innerHTML = `<img src='img/${courier}' id='courierIcon'>` + '<br>' + `${tracking}`
             document.body.appendChild(e)
 
-            data.packages.push({
-                "pkgId":result.test.packages[i].pkgId,
-                "logo":result.test.packages[i].logo,
-                "trackingNum":result.test.packages[i].trackingNum
-    
-            });
-
-        };
-
+        }
     });
 
+    ///write code for deleting the instance right here. 
+   
 });
