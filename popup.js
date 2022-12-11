@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.innerHTML = `<img src='img/${courier}.svg' id='courierIcon'>` + '<br>' + `${tracking}`
             
             data.packages.push({
-                "pkgId": Math.floor(Math.random() * 100 + 1),
+                "pkgId": Math.floor(Math.random() * 1000 + 1),
                 "logo": `${courier}.svg`,
                 "trackingNum": `${tracking}`
             })
