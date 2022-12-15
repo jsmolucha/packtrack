@@ -7,14 +7,15 @@
     font-weight: bold;
 
 }
-#newPkg, #savePkg {
+
+#newPkg {
     color: black;
     margin-left: 20%;
     margin-right: 20%;
     margin-bottom: 5px;
 }
 
-#pkgTrack {
+.pkgTrack {
     border: 1px;
     font-weight: bold;
     /*border-radius: 5px;*/

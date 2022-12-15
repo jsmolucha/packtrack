@@ -1,13 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+    performSync();
+
     var data = {
         "packages": [
+
+        ],
+
+        "trash": [
 
         ]
     }
 
     var newPkgBtn = document.getElementById('newPkg');
-    var savePkgBtn = document.getElementById('savePkg')
 
     ///////this code is for adding and checking tracking number
     newPkgBtn.addEventListener('click', function () {
@@ -24,30 +29,37 @@ document.addEventListener('DOMContentLoaded', function() {
             dom.append(c)
             
         } else {
-            //if there is a tracking number, proceed to the following code.
 
+            //if there is a tracking number, proceed to the following code.
             const e = document.createElement('button')
 
-            e.setAttribute('id', 'pkgTrack')
+            function newPackId() {
+                return(Math.floor(Math.random() * 10000 + 1))
+            }
+            
+            e.setAttribute('class', 'pkgTrack')
+            e.setAttribute('id', `${newPackId()}`)
 
             let tracking = document.getElementById('tracking').value
             let courier = document.getElementById('couriers').value
 
-            e.innerHTML = `<img src='img/${courier}.svg' id='courierIcon'>` + '<br>' + `${tracking}`
+            e.innerHTML = `<img src='img/${courier}.svg' id='courierIcon'>` + '<br>' + `${tracking}` + '<br>' + '<button id="deletePkg"> Delete</button>'
             
             data.packages.push({
-                "pkgId": Math.floor(Math.random() * 1000 + 1),
+                "pkgId": `${e.getAttribute('id')}`,
                 "logo": `${courier}.svg`,
                 "trackingNum": `${tracking}`
+
             })
 
-            chrome.storage.sync.set({'test':data}, function() {
+            chrome.storage.sync.set({'data':data}, function() {
                 //console.log(`storeArray now contains ${packageArray.length} objects`)
                 //then you just access the JSON objects as you normally would in an array
                console.log(data)
            })
-
-            document.body.appendChild(e)
+           
+            document.getElementById('packages').append(e)
+            //document.body.appendChild(e)
 
             document.getElementById('tracking').value = '';
             const errorMsg = document.getElementById('error')
@@ -56,29 +68,65 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
     });
-       
-    //this is where the data is loaded from local storage and offloaded into the DOM. 
-    chrome.storage.sync.get('test', function(result) {
-        console.log(result.test.packages)
 
-        for (i =0; i < result.test.packages.length; i++) {
-        
-            const e = document.createElement('button')
-            e.setAttribute('id', 'pkgTrack')
-            let tracking = result.test.packages[i].trackingNum
-            let courier = result.test.packages[i].logo
-            e.innerHTML = `<img src='img/${courier}' id='courierIcon'>` + '<br>' + `${tracking}`
-            document.body.appendChild(e)
+    const isLoaded = async selector => {
+        while (document.querySelector(selector) === null) {
+            await new Promise (resolve => requestAnimationFrame(resolve)) 
+        }
+        return document.querySelector(selector)
+    }
 
-            data.packages.push({
-                "pkgId":result.test.packages[i].pkgId,
-                "logo":result.test.packages[i].logo,
-                "trackingNum":result.test.packages[i].trackingNum
+
+    function performSync() {
+
+        //this is where the data is loaded from local storage and put into the DOM
+        //this function also moves the updated items into an array so that -
+        // - it is loaded into the DOM upon refresh.
+        //end function for data retrieval and storage loading
+
+        chrome.storage.sync.get('data', function(result) {
+            console.log(result.data.packages)
     
-            });
+            for (i =0; i < result.data.packages.length; i++) {
+            
+                const e = document.createElement('button')
+                e.setAttribute('class', 'pkgTrack')
+                let tracking = result.data.packages[i].trackingNum
+                let courier = result.data.packages[i].logo
+                e.setAttribute('id', result.data.packages[i].pkgId)
 
-        };
+                e.innerHTML = `<img src='img/${courier}' id='courierIcon'> <br> ${tracking} <br> <button value=${result.data.packages[i].pkgId} id="deletePkg">Delete</button>`
+                document.getElementById('packages').append(e)
 
-    });
 
-});
+                data.packages.push({
+                    "pkgId":result.data.packages[i].pkgId,
+                    "logo":result.data.packages[i].logo,
+                    "trackingNum":result.data.packages[i].trackingNum
+             
+                })
+                
+            }
+        })
+    }
+
+     isLoaded('#deletePkg').then((selector) => {
+
+        console.log("element is ready")
+        console.log(selector)
+
+        var deletePkgBtn = document.querySelectorAll('#deletePkg');
+        
+        deletePkgBtn.forEach(function (i) {
+            i.addEventListener('click', function() {
+                console.log("works" + this.value)
+                let markedForDelete = document.getElementById(this.value) 
+                markedForDelete.remove()
+            })
+        })
+    }) 
+}); // end DOM function
+
+
+   
+
