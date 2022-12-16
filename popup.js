@@ -2,7 +2,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     performSync();
 
-    var data = {
+    var cache = []
+
+    /* var data = {
         "packages": [
 
         ],
@@ -10,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
         "trash": [
 
         ]
-    }
+    } */
 
     var newPkgBtn = document.getElementById('newPkg');
 
@@ -45,17 +47,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
             e.innerHTML = `<img src='img/${courier}.svg' id='courierIcon'>` + '<br>' + `${tracking}` + '<br>' + '<button id="deletePkg"> Delete</button>'
             
-            data.packages.push({
+            cache.push({
                 "pkgId": `${e.getAttribute('id')}`,
                 "logo": `${courier}.svg`,
                 "trackingNum": `${tracking}`
 
             })
 
-            chrome.storage.sync.set({'data':data}, function() {
+            chrome.storage.sync.set({'data':cache}, function() {
                 //console.log(`storeArray now contains ${packageArray.length} objects`)
                 //then you just access the JSON objects as you normally would in an array
-               console.log(data)
+               console.log(cache)
+               //console.log("pack id: " + cache[0].pkgId)
            })
            
             document.getElementById('packages').append(e)
@@ -85,31 +88,34 @@ document.addEventListener('DOMContentLoaded', function() {
         //end function for data retrieval and storage loading
 
         chrome.storage.sync.get('data', function(result) {
-            console.log(result.data.packages)
+            console.log("resulted cache: " + result.cache[0])
     
-            for (i =0; i < result.data.packages.length; i++) {
+            for (i =0; i < result.cache.length; i++) {
             
                 const e = document.createElement('button')
                 e.setAttribute('class', 'pkgTrack')
-                let tracking = result.data.packages[i].trackingNum
-                let courier = result.data.packages[i].logo
-                e.setAttribute('id', result.data.packages[i].pkgId)
+                let tracking = result.cache[i].trackingNum
+                let courier = result.cache[i].logo
+                e.setAttribute('id', result.cache[i].pkgId)
 
-                e.innerHTML = `<img src='img/${courier}' id='courierIcon'> <br> ${tracking} <br> <button value=${result.data.packages[i].pkgId} id="deletePkg">Delete</button>`
+                e.innerHTML = `<img src='img/${courier}' id='courierIcon'> <br> ${tracking} <br> <button value=${result.cache[i].pkgId} id="deletePkg">Delete</button>`
                 document.getElementById('packages').append(e)
 
 
-                data.packages.push({
-                    "pkgId":result.data.packages[i].pkgId,
-                    "logo":result.data.packages[i].logo,
-                    "trackingNum":result.data.packages[i].trackingNum
+                cache.push({
+                    "pkgId":result.cache[i].pkgId,
+                    "logo":result.cache[i].logo,
+                    "trackingNum":result.cache[i].trackingNum
              
                 })
                 
             }
         })
     }
-
+    
+    //
+    //this is the function to find and delete packages
+    //
      isLoaded('#deletePkg').then((selector) => {
 
         console.log("element is ready")
@@ -122,6 +128,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log("works" + this.value)
                 let markedForDelete = document.getElementById(this.value) 
                 markedForDelete.remove()
+
+                var deleteThis = this.value
+                for (let i =0; i < cache.length; i++) {
+                    if(cache[i].pkgId == deleteThis) {
+                        console.log("delete item at " + i)
+
+                    }
+                }
+
             })
         })
     }) 
