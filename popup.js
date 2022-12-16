@@ -76,6 +76,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return document.querySelector(selector)
     }
 
+    function localStorageUpdate() {
+    //performs an update when an object is modified by the user like deletion
+        console.log(JSON.parse("This is the current array: " + data.pacakges))
+    }
 
     function performSync() {
         //this is where the data is loaded from local storage and put into the DOM
@@ -97,19 +101,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.innerHTML = `<img src='img/${courier}' id='courierIcon'> <br> ${tracking} <br> <button value=${result.data.packages[i].pkgId} id="deletePkg">Delete</button>`
                 document.getElementById('packages').append(e)
 
-
-                data.packages.push({
-                    "pkgId":result.data.packages[i].pkgId,
-                    "logo":result.data.packages[i].logo,
-                    "trackingNum":result.data.packages[i].trackingNum
-             
-                })
-                
-            }
-        })
-    }
-
-     isLoaded('#deletePkg').then((selector) => {
+                    data.packages.push({
+                        "pkgId":result.data.packages[i].pkgId,
+                        "logo":result.data.packages[i].logo,
+                        "trackingNum":result.data.packages[i].trackingNum
+                 
+                    })
+                }
+            })
+        }
+    ///
+    isLoaded('#deletePkg').then((selector) => {
 
         console.log("element is ready")
         console.log(selector)
@@ -126,12 +128,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 for (let i =0; i < data.packages.length; i++) {
                     if(data.packages[i].pkgId == deleteThis) {
                         console.log("delete item at " + i)
+                        let index = i
+                        var curArr = data.packages
+                        //sanity checks, ignore this lol
+                        console.log(curArr)
+                        //this splice method works *reliably*
+                        curArr.splice(index,1)
+                        console.log(curArr)
+
+
+
+                      
+                        
                     }
                 }
-
             })
         })
-    }) 
+    })
+    ///
 }); // end DOM function
 
 
