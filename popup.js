@@ -78,7 +78,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     function performSync() {
-
         //this is where the data is loaded from local storage and put into the DOM
         //this function also moves the updated items into an array so that -
         // - it is loaded into the DOM upon refresh.
@@ -122,6 +121,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log("works" + this.value)
                 let markedForDelete = document.getElementById(this.value) 
                 markedForDelete.remove()
+
+                var deleteThis = this.value
+                for (let i =0; i < data.packages.length; i++) {
+                    if(data.packages[i].pkgId == deleteThis) {
+                        console.log("delete item at " + i)
+                    }
+                }
+
             })
         })
     }) 
