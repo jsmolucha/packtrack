@@ -2,10 +2,23 @@
     background-color: rgba(230, 196, 167, 0.792);
     text-align: center;
 }
-#error {
-    color: red;
-    font-weight: bold;
 
+#error {
+    color: rgb(220,53,69);
+    background-color: rgba(220,53,69,.10);
+    font-weight: bold;
+    margin: 0px;
+    padding: 3px;
+    text-align: center;
+}
+
+#addSuccess {
+    color: rgb(25,135,84);
+    background-color: rgba(25,135,84,.10);
+    font-weight: bold;
+    margin:0;
+    padding: 3px;
+    text-align: center;
 }
 
 #newPkg {
@@ -16,20 +29,28 @@
 }
 
 .pkgTrack {
+    /*  
+    border-radius: 5px;
+    
+    */
     border: 1px;
-    font-weight: bold;
-    /*border-radius: 5px;*/
     border-style: solid;
-    border-color: gray;
+    border-color: black;
+    font-weight: bold;
     padding: 5px;
     color:rgb(93, 93, 255);
-    margin: 5px;
-    width: 95%;
+    width: 90%;
+    margin: 5 auto 5;
+    text-align: center;
 }
 
 #courierIcon {
     padding: 3px;
     height: 30px;
     width: 30px;
+}
+
+#msgCode {
+    margin: 20px;
 }
 

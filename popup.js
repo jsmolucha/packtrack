@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    
+
     performSync();
 
     var data = [
@@ -14,18 +14,13 @@ document.addEventListener('DOMContentLoaded', function() {
         //this function checks if the user put a tracking number
         //check if value is null or empty
         if (document.getElementById('tracking').value == '') {
-            const c = document.createElement('p')
-
-            //creating a new error object, probably a better way to do this honestly. 
-            c.setAttribute('id', 'error')
-            c.innerHTML = "Please enter valid tracking #"
-            const dom = document.getElementById('msgCode')
-            dom.append(c)
+            
+            emptySetError();
             
         } else {
 
             //if there is a tracking number, proceed to the following code.
-            const e = document.createElement('button')
+            const e = document.createElement('div')
 
             function newPackId() {
                 return(Math.floor(Math.random() * 10000 + 1))
@@ -53,6 +48,9 @@ document.addEventListener('DOMContentLoaded', function() {
               })
            
             document.getElementById('packages').append(e)
+
+            addPackageConfirm()
+
             //document.body.appendChild(e)
 
             document.getElementById('tracking').value = '';
@@ -62,6 +60,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
     });
+
+    function emptySetError() {
+        const c = document.createElement('p')
+
+            //creating a new error object, probably a better way to do this honestly. 
+            c.setAttribute('id', 'error')
+            c.innerHTML = "Please enter valid tracking #"
+            const dom = document.getElementById('msgCode')
+            dom.append(c)
+
+            setTimeout(function() {c.remove()}, 3000)
+    }
+
+    function addPackageConfirm() {
+        const c = document.createElement('p')
+
+            //creating a new error object, probably a better way to do this honestly. 
+            c.setAttribute('id', 'addSuccess')
+            c.innerHTML = "Successfully added"
+            const dom = document.getElementById('msgCode')
+            dom.append(c)
+
+            setTimeout(function() {c.remove()}, 3000)
+
+    }
 
     function clearArray() {
 
@@ -85,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 for (i =0; i < result.packages.length; i++) {
                 
-                    const e = document.createElement('button')
+                    const e = document.createElement('div')
                     e.setAttribute('class', 'pkgTrack')
 
                     let tracking = result.packages[i].trackingNum
