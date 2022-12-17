@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-
+    
     performSync();
 
     var data = [
@@ -63,13 +63,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     });
 
-    const isLoaded = async selector => {
-        while (document.querySelector(selector) === null) {
-            await new Promise (resolve => requestAnimationFrame(resolve)) 
-        }
-        return document.querySelector(selector)
-    }
-
     function clearArray() {
 
         chrome.storage.sync.clear(function() {
@@ -84,8 +77,9 @@ document.addEventListener('DOMContentLoaded', function() {
         //this is where the data is loaded from local storage and put into the DOM
         //this function also moves the updated items into an array so that -
         // - it is loaded into the DOM upon refresh.
-        //end function for data retrieval and storage loading
+        
         let promise = new Promise((resolve) => {
+            //set promise to finish the function and load all the DOM elements
             chrome.storage.sync.get(['packages']).then((result) => {
                 console.log(result.packages)
                 
@@ -108,13 +102,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         "trackingNum":result.packages[i].trackingNum
                     
                     })
-
                 }
-
+                //resolve promise here 
                 resolve("true")
             })
         })
-
+        //catch the promise and call the newDelete function to load delete functionality to the delete buttons
         await promise;
         console.log(promise)
 
@@ -123,57 +116,48 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function newDelete() {
 
+        var trash = [
+
+        ]
+
         const deleteButton = document.getElementsByClassName('deletePkg')
 
         for(let i=0; i < deleteButton.length; i++) {
             deleteButton[i].addEventListener('click', function() {
-                console.log(this.value)
                 let markedForDelete = document.getElementById(this.value) 
+                console.log(this.value)
                 markedForDelete.remove();
                 console.log("removed button id: " + this.value)
-            })
-        }
-        
-    }
-
-    ///
-    /* isLoaded('#deletePkg').then((selector) => {
-
-        console.log("element is ready")
-        console.log(selector)
-
-        var deletePkgBtn = document.querySelectorAll('#deletePkg');
-        
-        deletePkgBtn.forEach(function (i) {
-            i.addEventListener('click', function() {
-                console.log("works" + this.value)
-                let markedForDelete = document.getElementById(this.value) 
-                markedForDelete.remove()
 
                 var deleteThis = this.value
-
-                for (let i =0; i < data.length; i++) {
+                
+                for (let i=0; i < data.length; i++) {
                     if(data[i].pkgId == deleteThis) {
-                        console.log("delete item at " + i)
+
+                        console.log("delete item at index: " + i)
                         let index = i
-                        var curArr = data
-                        //sanity checks, ignore this lol
-                        console.log("old arr: " + curArr)
-                        //this splice method works *reliably*
-                        curArr.splice(index,1)
 
-                        console.log(curArr)
-                        //testing clearing from the local storage
-
-                        
-
+                        var old = data
+                        console.log("before splice: " + old)
+                    
+                        old.splice(index, 1)
+                        console.log("After splice: " + old)
                     }
-                } 
+                }
+                //thought process here 
+                //made a temporary array that would hold the new array mof objects pushed any time the delete button is pressed
+                trash.push(old)
+                //call the function to clear the local chrome storage
+                clearArray();
+                //set the now empty storage to the new values based off the trash that was set. 
+                //this actually works reliably since the chrome storage sync overwrites changes.
+                chrome.storage.sync.set({'packages': trash[0] }).then(() => {
+                    console.log("Value is set to " + trash[0]);
+
+                })
             })
-            
-        })
-        
-    }) */ 
+        }
+    }
 }); 
 // end DOM function
 
