@@ -131,29 +131,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 markedForDelete.remove()
 
                 var deleteThis = this.value
+
                 for (let i =0; i < data.packages.length; i++) {
                     if(data.packages[i].pkgId == deleteThis) {
                         console.log("delete item at " + i)
                         let index = i
                         var curArr = data.packages
                         //sanity checks, ignore this lol
-                        console.log(curArr)
+                        console.log("old arr: " + curArr)
                         //this splice method works *reliably*
                         curArr.splice(index,1)
+
                         console.log(curArr)
+                        //testing clearing from the local storage
 
-                        /* clearArray();
+                        
 
-                        data.packages.push(curArr)
-                        console.log("cleared")
+                    }//check for the package being deleted stops here
 
-                        console.log(data.packages) */
-                    }
-                }
+                } //for loop through the DOM stops here
             })
+            //put logic for removing items from the arr here 
+            //clears the chrome.storage.sync
+            /* clearArray();
+            //takes the updated array and then sets it to the new chrome.storage.sync. 
+            chrome.storage.sync.set({'data':curArr}, function() {
+            //console.log(`storeArray now contains ${packageArray.length} objects`)
+            //then you just access the JSON objects as you normally would in an array
+                console.log(curArr)
+            })  */
         })
-    })
-}); // end DOM function
+        
+    }) // function for checking if the button loaded ends here
+}); 
+// end DOM function
 
 
    
