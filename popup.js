@@ -5,10 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var data = {
         "packages": [
 
-        ],
-
-        "trash": [
-
         ]
     }
 
@@ -76,6 +72,16 @@ document.addEventListener('DOMContentLoaded', function() {
         return document.querySelector(selector)
     }
 
+    function clearArray() {
+
+        chrome.storage.sync.clear(function() {
+            var error = chrome.runtime.lastError;
+            if(error) {
+                console.error(error)
+            }
+        })
+    }
+
     function localStorageUpdate() {
     //performs an update when an object is modified by the user like deletion
         console.log(JSON.parse("This is the current array: " + data.pacakges))
@@ -136,16 +142,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         curArr.splice(index,1)
                         console.log(curArr)
 
+                        /* clearArray();
 
+                        data.packages.push(curArr)
+                        console.log("cleared")
 
-                      
-                        
+                        console.log(data.packages) */
                     }
                 }
             })
         })
     })
-    ///
 }); // end DOM function
 
 
