@@ -2,11 +2,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     performSync();
 
-    var data = {
-        "packages": [
+    var data = [
 
-        ]
-    }
+    ]
 
     var newPkgBtn = document.getElementById('newPkg');
 
@@ -39,20 +37,20 @@ document.addEventListener('DOMContentLoaded', function() {
             let tracking = document.getElementById('tracking').value
             let courier = document.getElementById('couriers').value
 
-            e.innerHTML = `<img src='img/${courier}.svg' id='courierIcon'>` + '<br>' + `${tracking}` + '<br>' + '<button id="deletePkg"> Delete</button>'
+            e.innerHTML = `<img src='img/${courier}.svg' id='courierIcon'>` + '<br>' + `${tracking}` + '<br>' + '<button class="deletePkg">Delete</button>'
             
-            data.packages.push({
+            data.push({
                 "pkgId": `${e.getAttribute('id')}`,
                 "logo": `${courier}.svg`,
                 "trackingNum": `${tracking}`
 
             })
 
-            chrome.storage.sync.set({'data':data}, function() {
-                //console.log(`storeArray now contains ${packageArray.length} objects`)
-                //then you just access the JSON objects as you normally would in an array
-               console.log(data)
-           })
+            chrome.storage.sync.set({'packages': data }).then(() => {
+
+                console.log("Value is set to " + data);
+
+              })
            
             document.getElementById('packages').append(e)
             //document.body.appendChild(e)
@@ -82,42 +80,64 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     }
 
-    function localStorageUpdate() {
-    //performs an update when an object is modified by the user like deletion
-        console.log(JSON.parse("This is the current array: " + data.pacakges))
-    }
-
-    function performSync() {
+    async function performSync() {
         //this is where the data is loaded from local storage and put into the DOM
         //this function also moves the updated items into an array so that -
         // - it is loaded into the DOM upon refresh.
         //end function for data retrieval and storage loading
+        let promise = new Promise((resolve) => {
+            chrome.storage.sync.get(['packages']).then((result) => {
+                console.log(result.packages)
+                
+                for (i =0; i < result.packages.length; i++) {
+                
+                    const e = document.createElement('button')
+                    e.setAttribute('class', 'pkgTrack')
 
-        chrome.storage.sync.get('data', function(result) {
-            console.log(result.data.packages)
-    
-            for (i =0; i < result.data.packages.length; i++) {
-            
-                const e = document.createElement('button')
-                e.setAttribute('class', 'pkgTrack')
-                let tracking = result.data.packages[i].trackingNum
-                let courier = result.data.packages[i].logo
-                e.setAttribute('id', result.data.packages[i].pkgId)
+                    let tracking = result.packages[i].trackingNum
+                    let courier = result.packages[i].logo
 
-                e.innerHTML = `<img src='img/${courier}' id='courierIcon'> <br> ${tracking} <br> <button value=${result.data.packages[i].pkgId} id="deletePkg">Delete</button>`
-                document.getElementById('packages').append(e)
+                    e.setAttribute('id', result.packages[i].pkgId)
 
-                    data.packages.push({
-                        "pkgId":result.data.packages[i].pkgId,
-                        "logo":result.data.packages[i].logo,
-                        "trackingNum":result.data.packages[i].trackingNum
-                 
+                    e.innerHTML = `<img src='img/${courier}' id='courierIcon'> <br> ${tracking} <br> <button value=${result.packages[i].pkgId} class="deletePkg">Delete</button>`
+                    document.getElementById('packages').append(e)
+
+                    data.push({
+                        "pkgId":result.packages[i].pkgId,
+                        "logo":result.packages[i].logo,
+                        "trackingNum":result.packages[i].trackingNum
+                    
                     })
+
                 }
+
+                resolve("true")
+            })
+        })
+
+        await promise;
+        console.log(promise)
+
+        newDelete()
+    }
+
+    function newDelete() {
+
+        const deleteButton = document.getElementsByClassName('deletePkg')
+
+        for(let i=0; i < deleteButton.length; i++) {
+            deleteButton[i].addEventListener('click', function() {
+                console.log(this.value)
+                let markedForDelete = document.getElementById(this.value) 
+                markedForDelete.remove();
+                console.log("removed button id: " + this.value)
             })
         }
+        
+    }
+
     ///
-    isLoaded('#deletePkg').then((selector) => {
+    /* isLoaded('#deletePkg').then((selector) => {
 
         console.log("element is ready")
         console.log(selector)
@@ -132,11 +152,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 var deleteThis = this.value
 
-                for (let i =0; i < data.packages.length; i++) {
-                    if(data.packages[i].pkgId == deleteThis) {
+                for (let i =0; i < data.length; i++) {
+                    if(data[i].pkgId == deleteThis) {
                         console.log("delete item at " + i)
                         let index = i
-                        var curArr = data.packages
+                        var curArr = data
                         //sanity checks, ignore this lol
                         console.log("old arr: " + curArr)
                         //this splice method works *reliably*
@@ -147,22 +167,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         
 
-                    }//check for the package being deleted stops here
-
-                } //for loop through the DOM stops here
+                    }
+                } 
             })
-            //put logic for removing items from the arr here 
-            //clears the chrome.storage.sync
-            /* clearArray();
-            //takes the updated array and then sets it to the new chrome.storage.sync. 
-            chrome.storage.sync.set({'data':curArr}, function() {
-            //console.log(`storeArray now contains ${packageArray.length} objects`)
-            //then you just access the JSON objects as you normally would in an array
-                console.log(curArr)
-            })  */
+            
         })
         
-    }) // function for checking if the button loaded ends here
+    }) */ 
 }); 
 // end DOM function
 
