@@ -31,13 +31,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
             let tracking = document.getElementById('tracking').value
             let courier = document.getElementById('couriers').value
+            let description = document.getElementById('description').value
 
-            e.innerHTML = `<img src='img/${courier}.svg' id='courierIcon'>` + '<br>' + `${tracking}` + '<br>' + '<button class="deletePkg">Delete</button>'
+            e.innerHTML = `<img src='img/${courier}.svg' id='courierIcon'>` + '<br>' + `${tracking}` + '<br>' + `<p class=desc>Note: ${description}</p>` + '<button class="deletePkg">Delete</button>'
             
             data.push({
                 "pkgId": `${e.getAttribute('id')}`,
                 "logo": `${courier}.svg`,
-                "trackingNum": `${tracking}`
+                "trackingNum": `${tracking}`,
+                "description":`${description}`
 
             })
 
@@ -86,6 +88,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }
 
+    function deletePackageConfirm() {
+        const c = document.createElement('p')
+
+            //creating a new error object, probably a better way to do this honestly. 
+            c.setAttribute('id', 'error')
+            c.innerHTML = "Successfully removed"
+            const dom = document.getElementById('msgCode')
+            dom.append(c)
+
+            setTimeout(function() {c.remove()}, 3000)
+
+    }
+
     function clearArray() {
 
         chrome.storage.sync.clear(function() {
@@ -113,16 +128,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     let tracking = result.packages[i].trackingNum
                     let courier = result.packages[i].logo
+                    let description = result.packages[i].description
 
                     e.setAttribute('id', result.packages[i].pkgId)
 
-                    e.innerHTML = `<img src='img/${courier}' id='courierIcon'> <br> ${tracking} <br> <button value=${result.packages[i].pkgId} class="deletePkg">Delete</button>`
+                    e.innerHTML = `<img src='img/${courier}' id='courierIcon'> <br> ${tracking} <br> <p class=desc>Note: ${description}</p> <button value=${result.packages[i].pkgId} class="deletePkg">Delete</button>`
                     document.getElementById('packages').append(e)
 
                     data.push({
                         "pkgId":result.packages[i].pkgId,
                         "logo":result.packages[i].logo,
-                        "trackingNum":result.packages[i].trackingNum
+                        "trackingNum":result.packages[i].trackingNum,
+                        "description": result.packages[i].description
                     
                     })
                 }
