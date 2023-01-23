@@ -29,16 +29,16 @@
 }
 
 #newPkg {
-    color: black;
+    color: white;
     margin-bottom: 5px;
-    background: white;
+    background: black;
     border-radius: 3px;
     width: 80%;
     height: 30px;
     margin: 0 20% 0 10%;
     border: 1px;
     border-style: solid;
-    border-color: rgb(93, 93, 255, 0.5);
+    border-color: black;
     transition-duration: 0.2s;
 
 }
@@ -81,5 +81,19 @@
     color: black;
     font-style: italic;
     font-weight: 400;
+}
+
+.deletePkg {
+    color: rgb(220,53,69);
+    background-color: rgba(220,53,69,.10);
+    border: 1px;
+    border-style: solid;
+    border-color: rgb(220,53,69);
+    border-radius: 2px;
+
+}
+
+.deletePkg:hover {
+    cursor: pointer;
 }
 
