@@ -6,11 +6,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     ]
 
+    var FedEx  = "https://www.fedex.com/fedextrack/?trknbr="
+
     var newPkgBtn = document.getElementById('newPkg');
 
     ///////this code is for adding and checking tracking number
     newPkgBtn.addEventListener('click', function () {
-
+        
+        var trackingLink = ""
         //this function checks if the user put a tracking number
         //check if value is null or empty
         if (document.getElementById('tracking').value == '') {
@@ -42,10 +45,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 "description":`${description}`
 
             })
+            //there has gotta be a way to optimize this, definitely inneficient as hell
+            if (courier == "FedEx") {
+                trackingLink = "https://www.fedex.com/fedextrack/?trknbr="
+
+            } else if (courier == "UPS") {
+                trackingLink = "https://wwwapps.ups.com/WebTracking/track?track=yes&trackNums="
+            }
+            console.log(`tracking link: ${trackingLink}${tracking}`)
 
             chrome.storage.sync.set({'packages': data }).then(() => {
 
-                console.log("Value is set to " + data);
+                // testing purposes 
+                //console.log("Value is set to " + data);
 
               })
            
