@@ -6,14 +6,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     ]
 
-    var FedEx  = "https://www.fedex.com/fedextrack/?trknbr="
-
     var newPkgBtn = document.getElementById('newPkg');
 
     ///////this code is for adding and checking tracking number
     newPkgBtn.addEventListener('click', function () {
         
+        //empty variable that will be dynamically set between each package
         var trackingLink = ""
+        
         //this function checks if the user put a tracking number
         //check if value is null or empty
         if (document.getElementById('tracking').value == '') {
@@ -36,16 +36,8 @@ document.addEventListener('DOMContentLoaded', function() {
             let courier = document.getElementById('couriers').value
             let description = document.getElementById('description').value
 
-            e.innerHTML = `<img src='img/${courier}.svg' id='courierIcon'>` + '<br>' + `${tracking}` + '<br>' + `<p class=desc>Note: ${description}</p>` + '<button class="deletePkg">Delete</button>'
-            
-            data.push({
-                "pkgId": `${e.getAttribute('id')}`,
-                "logo": `${courier}.svg`,
-                "trackingNum": `${tracking}`,
-                "description":`${description}`
-
-            })
             //there has gotta be a way to optimize this, definitely inneficient as hell
+
             if (courier == "FedEx") {
                 trackingLink = "https://www.fedex.com/fedextrack/?trknbr="
 
@@ -54,6 +46,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             console.log(`tracking link: ${trackingLink}${tracking}`)
 
+            e.innerHTML = `<img src='img/${courier}.svg' id='courierIcon'>` 
+            + '<br>' 
+            + `<a id='trackingLink' href='${trackingLink}${tracking}' target="_blank"> ${tracking} </a>` 
+            + '<br>'
+            + `<p class=desc>Note: ${description}</p>` 
+            + '<button class="deletePkg">Delete</button>' 
+            
+            
+            data.push({
+                "pkgId": `${e.getAttribute('id')}`,
+                "logo": `${courier}.svg`,
+                "trackingNum": `${tracking}`,
+                "description":`${description}`
+
+            })
+            
             chrome.storage.sync.set({'packages': data }).then(() => {
 
                 // testing purposes 
@@ -64,8 +72,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('packages').append(e)
 
             addPackageConfirm()
-
-            //document.body.appendChild(e)
 
             document.getElementById('tracking').value = '';
             const errorMsg = document.getElementById('error')
