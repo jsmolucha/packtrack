@@ -43,6 +43,10 @@
 
 }
 
+#trackingLink {
+    text-decoration: none;
+}
+
 #newPkg:hover {
     background-color: rgb(93, 93, 255,0.5);
     border-color: rgb(93, 93, 255,0.25);
