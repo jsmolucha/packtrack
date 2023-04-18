@@ -1,3 +1,12 @@
+// TODO                     //
+// add functionality to clear the fields after submitting a new package successfully.
+// create a link to the website to track the item
+// perhaps a google calendar integration or something. Maybe a downloadable ical or cal file.
+// maybe limiting the amount of characters to not overload the chrome storage
+// consider turning the delete button into a "Delivered" button. 
+    // adding a trash icon to delete the pacakge 
+
+
 document.addEventListener('DOMContentLoaded', function() {
 
     performSync();
@@ -46,17 +55,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
             })
             //there has gotta be a way to optimize this, definitely inneficient as hell
+            //update 04/18: using a hashmap might be the best option here. Temporarily map all the objects to the map and then use key-val pairs
+            //key: courier | value: link_to_tracking
             if (courier == "FedEx") {
                 trackingLink = "https://www.fedex.com/fedextrack/?trknbr="
 
             } else if (courier == "UPS") {
                 trackingLink = "https://wwwapps.ups.com/WebTracking/track?track=yes&trackNums="
             }
-            console.log(`tracking link: ${trackingLink}${tracking}`)
+            //testing 
+            //console.log(`tracking link: ${trackingLink}${tracking}`)
 
             chrome.storage.sync.set({'packages': data }).then(() => {
 
-                // testing purposes 
+                // testing  
                 //console.log("Value is set to " + data);
 
               })
@@ -90,7 +102,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function addPackageConfirm() {
         const c = document.createElement('p')
 
-            //creating a new error object, probably a better way to do this honestly. 
+            //package adding confirmation.
+            //want to add functionality to throw error if the storage isnt synced correctly. 
             c.setAttribute('id', 'addSuccess')
             c.innerHTML = "Successfully added"
             const dom = document.getElementById('msgCode')
@@ -103,7 +116,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function deletePackageConfirm() {
         const c = document.createElement('p')
 
-            //creating a new error object, probably a better way to do this honestly. 
+            //creating a new error object, probably a better way to do this. 
+            //object is rendered for 3000ms and then is removed from the DOM.
             c.setAttribute('id', 'error')
             c.innerHTML = "Successfully removed"
             const dom = document.getElementById('msgCode')
